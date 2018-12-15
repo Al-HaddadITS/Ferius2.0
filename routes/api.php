@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\LogingInController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,16 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// Route::get('getSettings', function () {
+//     return 'Hello World';
+// });
+
+Route::resource('getSettings', 'SettingsController');
+
+Route::resource('EmployeesList', 'EmployeeController');
+
+Route::resource('DepartmentsList', 'DepartmentController');
+
+
+
