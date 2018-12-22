@@ -405,7 +405,30 @@
           <v-form>
               <v-container>
                   <v-layout row wrap>
-                      <v-flex></v-flex>
+                      <v-flex md6>
+                          <v-autocomplete
+                                    :items="contractTemplates"
+          label="Choose Contract"
+          clearable
+          outline
+          :color="setting.app_color_accent"
+          v-model="contract"
+          append-icon="fas fa-ring"
+          :menu-props="{'offset-y': true}"
+                          >
+                          </v-autocomplete>
+                      </v-flex>
+                      <v-flex md6>
+                          <v-text-field
+      label="Salary"
+      v-model="salary"
+      outline
+      :color="setting.app_color_accent"
+      clearable
+      :prefix="currency"
+      append-icon="fas fa-id-card"
+    ></v-text-field>
+                      </v-flex>
                   </v-layout>
               </v-container>
           </v-form>
@@ -456,6 +479,8 @@
          religion: '',
          spouseName: '',
          address: '',
+         contract: '',
+         salary: '',
       marital: '',
       menu: false,
       menu2: false,
@@ -469,6 +494,7 @@
       secNo: '',
       telNo: '',
       countryCode: null,
+      currency: null,
       residence: '',
       countryDB: null
       }
@@ -476,10 +502,19 @@
     created(){
         this.$store.dispatch('SetPageTitle',  'Create New Contract')
         this.getCountriesList()
+        this.$store.dispatch('SetTemplates')
     },
         computed:{
               settings(){
             return this.$store.getters.settings
+        },
+              contractTemplates(){
+                  let temp = this.$store.getters.templates
+                  let temps = []
+                  temp.forEach(item => {
+                      temps.push(item.name)
+                  })
+            return temps
         },
         fullName(){
             if(!this.Fname && !this.Lname){
@@ -500,6 +535,9 @@
                         if(item.name == this.residence){
                             item.callingCodes.forEach(cc =>{
                                 this.countryCode = '+'+cc
+                            })
+                            item.currencies.forEach(cur =>{
+                                this.currency = cur
                             })
                         }
                     })

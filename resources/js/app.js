@@ -3,7 +3,11 @@ import Axios from 'axios'
 import store from './store'
 import router from './router'
 import { createSimpleTransition } from 'vuetify/es5/util/helpers'
-
+import 'tui-editor/dist/tui-editor.css'
+import 'tui-editor/dist/tui-editor-contents.css'
+import 'codemirror/lib/codemirror.css'
+import { Editor } from '@toast-ui/vue-editor'
+import Icon from './components/Icon'
 import 'vuetify/dist/vuetify.min.css'
 /**
  * First we will load all of this project's JavaScript dependencies which

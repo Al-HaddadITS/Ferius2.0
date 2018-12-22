@@ -4,6 +4,9 @@ import AdminDashboard from './components/admin/dashboard/admin_dashboard.vue'
 import AdminEmployees from './components/admin/employees/admin_employee.vue'
 import AdminEmployeesCreate from './components/admin/employees/admin_create_emp.vue'
 import AdminDepartments from './components/admin/departments/admin_departments.vue'
+import AdminHrTemplates from './components/admin/HrTemplates/adminHrTemplates.vue'
+import AdminHrTemplatesCreate from './components/admin/HrTemplates/AdminHrTemplatesCreate.vue'
+import AdminViewTemplates from './components/admin/HrTemplates/adminViewTemplates.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -17,7 +20,9 @@ const router = new Router({
         {
             path: '/admin',
             redirect: '/admin/home',
-            meta: { page_title: 'Dashboard' }
+            meta: {
+                page_title: 'Dashboard'
+            }
         },
         {
             path: '/admin/home',
@@ -39,6 +44,21 @@ const router = new Router({
             name: 'AdminDepartments',
             component: AdminDepartments,
         },
+        {
+            path: '/admin/hrTemplates',
+            name: 'AdminHrTemplates',
+            component: AdminHrTemplates,
+        },
+        {
+            path: '/admin/hrTemplates/create',
+            name: 'AdminHrTemplatesCreate',
+            component: AdminHrTemplatesCreate,
+        },
+        {
+            path: '/admin/hrTemplate/view/:id',
+            name: 'AdminViewTemplates',
+            component: AdminViewTemplates
+        }
 
     ]
 })

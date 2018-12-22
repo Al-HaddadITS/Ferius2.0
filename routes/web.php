@@ -28,5 +28,8 @@ Route::get('/admin/home', 'AdminController@index');
 Route::get('/admin/employees', 'AdminController@index');
 
 Route::get('/admin/departments', 'AdminController@index');
+Route::get('/admin/hrTemplates', 'AdminController@index');
+Route::get('/admin/hrTemplates/create', 'AdminController@index');
+Route::get('/admin/hrTemplate/view/{id}', 'AdminController@index');
 
 Route::get('/admin/employees/create', 'AdminController@index' );

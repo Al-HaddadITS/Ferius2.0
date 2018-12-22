@@ -29,5 +29,7 @@ Route::resource('EmployeesList', 'EmployeeController');
 
 Route::resource('DepartmentsList', 'DepartmentController');
 
+Route::resource('TemplatesList', 'TemplateController');
+
 
 

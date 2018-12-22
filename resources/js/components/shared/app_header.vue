@@ -7,7 +7,7 @@
 
       <v-spacer></v-spacer>
 <!-- <v-toolbar-title>{{ setting.app_name }} - {{ page_title }}</v-toolbar-title> -->
-<v-toolbar-title class="pageTitle">{{ pageTitle }}</v-toolbar-title>
+<v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
 <v-spacer></v-spacer>
 <v-toolbar-items class="hidden-sm-and-down">
 
@@ -88,11 +88,3 @@ export default {
         }
 }
 </script>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css?family=Lora:400i');
-.pageTitle{
-    font-family: 'Lora', serif;
-        font-size: 28px;
-}
-</style>

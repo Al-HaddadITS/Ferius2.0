@@ -69,6 +69,7 @@ export default {
         { icon: 'time_to_leave', text: 'Reports' , link: 'AdminEmployees'},
         { divider: true },
         { icon: 'help', text: 'Policies & Forms' , link: 'AdminEmployees' },
+        { icon: 'help', text: 'HR Templates' , link: 'AdminHrTemplates' },
         { icon: 'settings', text: 'Settings' , link: 'AdminEmployees' }
       ]
         }
