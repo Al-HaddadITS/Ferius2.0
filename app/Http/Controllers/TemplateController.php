@@ -76,9 +76,12 @@ class TemplateController extends Controller
      * @param  \App\Template  $template
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Template $template)
+    public function update(Request $request, $id)
     {
-        //
+        $temp = Template::find($id);
+        $temp->temp = $request->temp;
+        $temp->save();
+        return $request;
     }
 
     /**

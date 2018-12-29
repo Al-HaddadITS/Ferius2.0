@@ -42,9 +42,10 @@
       :headers="headers"
       :search="search"
       :items="templates"
+      :loading="loading"
       class="pa-4"
     >
-      <!-- :items="" -->
+      <v-progress-linear slot="progress" :color="setting.app_color_accent" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props" >
           <!-- <router-link tag="tr" :to="'admin/hrTemplates/view/'+props.item.id" style="cursor: pointer;"> -->
           <tr @click="openDialog(props.item.id)"  style="cursor: pointer;">
@@ -96,11 +97,17 @@
 
         <v-card-text>
             <!-- {{ tempMethod(viewTemplates.temp) }} -->
+            <!-- <div class="pre-formatted" v-html="viewTemplates.temp"> -->
             <div class="pre-formatted">
 
-                <viewer
+<editor
+v-model="viewTemplates.temp"
+:init="config"
+api-key="8vg7aylhgr5nwcnq7fzajhqcfehqvrzyaog4226rl7mymtd1"
+></editor>
+                <!-- <viewer
                 :value="viewTemplates.temp"
-                ></viewer>
+                ></viewer> -->
 
             </div>
         </v-card-text>
@@ -112,6 +119,7 @@
           <v-btn
             :color="setting.app_color_info"
             flat
+            @click="editTemplate(viewTemplates.id, viewTemplates.name, viewTemplates.temp)"
           >
             Edit
           </v-btn>
@@ -160,12 +168,27 @@
 </template>
 
 <script>
-import Viewer from '@toast-ui/vue-editor/src/Viewer.vue'
+import Editor from '@tinymce/tinymce-vue';
+// import { component } from 'vue-mce'
   export default {
-  components: {
-    'viewer': Viewer
+      components: {
+    'editor': Editor
   },
     data: () => ({
+        config:{
+height: 500,
+                inline: false,
+                theme: 'modern',
+                fontsize_formats: "8px 10px 12px 14px 16px 18px 20px 22px 24px 26px 28px 30px 34px 38px 42px 48px 54px 60px",
+                plugins: 'print preview fullpage powerpaste searchreplace autolink directionality advcode visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists textcolor wordcount tinymcespellchecker a11ychecker imagetools mediaembed  linkchecker contextmenu colorpicker textpattern help',
+                toolbar1: 'formatselect fontsizeselect | bold italic strikethrough forecolor backcolor | link | alignleft aligncenter alignright alignjustify  | numlist bullist outdent indent  | removeformat',
+                image_advtab: true,
+                  templates: [
+    { title: 'Test template 1', content: 'Test 1' },
+    { title: 'Test template 2', content: 'Test 2' }
+  ],
+  branding: false
+        },
         search: '',
         switch1: true,
       dialog: false,
@@ -232,10 +255,15 @@ import Viewer from '@toast-ui/vue-editor/src/Viewer.vue'
                 viewTemplates(){
             return this.$store.getters.viewTemplates
         },
-
+              loading(){
+            return this.$store.getters.loading
+        },
     },
 
     watch: {
+        snackbar(val){
+            this.snackbars = val
+        },
         snackbars(val){
             if(!val){
                 this.$store.dispatch('clearSnackBar')
@@ -262,6 +290,12 @@ import Viewer from '@toast-ui/vue-editor/src/Viewer.vue'
     },
 
     methods: {
+        editTemplate(id, name, temp){
+            this.$store.dispatch('editTemplate', {id: id, name: name, temp: temp})
+            .then(res => {
+                    this.waiting = true
+                })
+        },
         deleteTemplate(id, name){
             this.$store.dispatch('deleteTemplate', {id: id, name: name})
                 .then(res => {

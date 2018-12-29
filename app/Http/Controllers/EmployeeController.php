@@ -38,7 +38,45 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $emp = new Employee;
+        $emp->EmpID = $request->EmpID;
+        $emp->Fname = $request->Fname;
+        $emp->Lname = $request->Lname;
+        $emp->email = $request->email;
+        $emp->dob = $request->dob;
+        $emp->gender = $request->gender;
+        $emp->pob = $request->pob;
+        $emp->nationality = $request->nationality;
+        $emp->religion = $request->religion;
+        $emp->marital = $request->marital;
+        $emp->spouseName = $request->spouseName;
+        $emp->ID_no = $request->ID_no;
+        $emp->idExpiry = $request->idExpiry;
+        $emp->visaNo = $request->visaNo;
+        $emp->visaExpiry = $request->visaExpiry;
+        $emp->passportNo = $request->passportNo;
+        $emp->passportIssue = $request->passportIssue;
+        $emp->passportExpiry = $request->passportExpiry;
+        $emp->passportPOI = $request->passportPOI;
+        $emp->residence = $request->residence;
+        $emp->mobNo = $request->mobNo;
+        $emp->secNo = $request->secNo;
+        $emp->telNo = $request->telNo;
+        $emp->address = $request->address;
+        $emp->template_id = $request->template_id;
+        $emp->salary = $request->salary;
+        $emp->contractDate = $request->contractDate;
+        $emp->doj = $request->doj;
+        $emp->JobTitle = $request->JobTitle;
+        $emp->department_id = $request->department_id;
+        $emp->profilePic = $request->profilePic;
+        $emp->Resume = $request->Resume;
+        $emp->IDCopy = $request->IDCopy;
+        $emp->PassportCopy = $request->PassportCopy;
+        $emp->EduCertificate = $request->EduCertificate;
+        $emp->OtherDocs = $request->OtherDocs;
+        $emp->save();
+        return $request;
     }
 
     /**

@@ -37,7 +37,11 @@
         @yield('content')
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/vue-mce@1.5.0/dist/vue-mce.web.js"></script>
+    <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=8vg7aylhgr5nwcnq7fzajhqcfehqvrzyaog4226rl7mymtd1"></script>
 
 <script src="{{ asset('js/app.js') }}"></script>
+
+
 </body>
 </html>

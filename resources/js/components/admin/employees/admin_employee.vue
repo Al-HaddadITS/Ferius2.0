@@ -60,104 +60,9 @@
           <v-toolbar-title class="text-xs-center">Employees List</v-toolbar-title>
           <v-spacer></v-spacer>
 
-        <!-- <v-btn outline :to="{name: 'AdminEmployeesCreate'}">Add New Employee</v-btn> -->
-
-    <v-dialog
-      v-model="dialog"
-      width="500"
-    >
-        <v-btn slot="activator" outline>Add New Employee</v-btn>
-         <v-card>
-        <v-card-title
-          :class="setting.app_color_accent + ' headline white--text'"
-          primary-title
-        >
-          Employment form Creation
-        </v-card-title>
-
-        <v-card-text class="pa-0" >
-
-          <v-container fluid>
-              <v-layout justify-space-between pa-3>
-                  <v-flex d-flex text-xs-center md6>
+        <v-btn outline :to="{name: 'AdminEmployeesCreate'}">Add New Employee</v-btn>
 
 
-                      <v-card class="mx-auto" flat style="cursor: pointer;" @click="dialog2 = true; dialog = false">
-                          <v-card-text>
-                              <v-icon x-large class="mb-4">fas fa-desktop</v-icon>
-                              <h4>Send link to Employee</h4>
-                          </v-card-text>
-
-                      </v-card>
-
-                  </v-flex>
-                  <v-flex d-flex text-xs-center md6 >
-                      <v-card class="mx-auto" flat :to="{name: 'AdminEmployeesCreate'}">
-                          <v-card-text>
-                            <v-icon x-large class="mb-4">fas fa-highlighter</v-icon>
-                            <h4>Add manually</h4>
-                          </v-card-text>
-                      </v-card>
-                  </v-flex>
-              </v-layout>
-          </v-container>
-
-
-        </v-card-text>
-
-
-      </v-card>
-    </v-dialog>
-    <v-dialog v-model="dialog2" transition="dialog-bottom-transition" width="600">
-        <v-card>
-                    <v-card-title
-          :class="setting.app_color_accent + ' headline white--text'"
-          primary-title
-        >
-          Send Link to {{ empEmail || 'Employee' }}
-        </v-card-title>
-
-<v-card-text class="ma-0 pa-0">
-<v-container>
-        <v-list subheader class="ma-0 pa-0">
-          <v-subheader>Please follow below instructions carefully</v-subheader>
-
-<ol>
-    <li style="line-height: 25px">
-        <h5>Enter Employee's Email Address below</h5>
-    </li>
-    <li style="line-height: 25px">
-        <h5>The employee will receive an email with a temporary (one-time) link to fill their details</h5>
-    </li>
-    <li style="line-height: 25px">
-        <h5>After submittion, you will receive an email with Employees details for your approval</h5>
-    </li>
-</ol>
-
-<br>
-<v-form v-model="valid">
-<v-layout row wrap class="text-xs-center">
-    <v-flex class="px-1">
-<v-text-field outline  v-model="empName" label="Employee Name" ></v-text-field>
-    </v-flex>
-    <v-flex class="px-1">
-<v-text-field outline :rules="emailRules" v-model="empEmail" label="Employee Email" ></v-text-field>
-    </v-flex>
-</v-layout>
-</v-form>
-
-        </v-list>
-</v-container>
-</v-card-text>
-<v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn :color="setting.app_color_accent" flat @click="dialog2 = false; empEmail = ''; empName=''">Cancel</v-btn>
-          <v-btn :color="setting.app_color_accent" dark @click="dialog2 = false; empEmail = ''; empName=''">Send</v-btn>
-        </v-card-actions>
-
-        </v-card>
-    </v-dialog>
 
         </v-toolbar>
 
@@ -165,8 +70,10 @@
       :headers="headers"
       :search="search"
       :items="emps"
+      :loading="loading"
       class="pa-4"
     >
+    <v-progress-linear slot="progress" :color="setting.app_color_accent" indeterminate></v-progress-linear>
       <template slot="items" slot-scope="props">
         <td>{{ props.item.EmpID }}</td>
         <td>{{ props.item.Fname }}</td>
@@ -191,17 +98,7 @@
   export default {
     data: () => ({
         search: '',
-        switch1: true,
-      dialog: false,
-      dialog2: false,
-      empEmail: '',
-       valid: false,
 
-      emailRules: [
-        v => !!v || 'E-mail is required',
-        v => /.+@.+/.test(v) || 'E-mail must be valid'
-      ],
-      empName: '',
       headers: [
         { text: 'Employee ID', value: 'EmpID'},
         { text: 'First Name', value: 'Fname' },
@@ -209,20 +106,6 @@
         { text: 'Job Role', value: 'JobTitle' },
         { text: 'Department', value: 'department.name' },
       ],
-      modalPicker:[
-          {title: "Click Here to send Contract form to employee"},
-          {title: "Click Here to manually fill in the employee form"}
-      ],
-      employees: [],
-      editedIndex: -1,
-      editedItem: {
-        name: '',
-        empCount: 0
-      },
-      defaultItem: {
-        name: '',
-        empCount: 0
-      },
       empStatusFilter: [
           {title:'Active'},
           {title:'Inactive'}
@@ -239,90 +122,24 @@
         },
       emps(){
             return this.$store.getters.employees
-        }
+        },
+      loading(){
+            return this.$store.getters.loading
+        },
     },
 
-    watch: {
-      dialog (val) {
-        val || this.close()
-      }
-    },
 
     created () {
-      this.initialize()
         this.$store.dispatch('getSettings')
         this.$store.dispatch('setEmployees')
         this.$store.dispatch('SetPageTitle', 'Employees')
     },
 
     methods: {
-      initialize () {
-        this.employees = [
-          {
-            Fname: 'Akshay',
-            Lname: 'Manoj',
-            EmployeeId: 'D3515',
-            Department: 'Development',
-            JobTitle: 'Developer',
-            EmpImg: 'https://cdn.vuetifyjs.com/images/lists/1.jpg'
-          },
-          {
-            Fname: 'Rajeev',
-            Lname: 'Indusha',
-            EmployeeId: 'S5986',
-            Department: 'Salesman',
-            JobTitle: 'Sales',
-            EmpImg: 'https://cdn.vuetifyjs.com/images/lists/2.jpg'
-          },
-          {
-            Fname: 'Valli',
-            Lname: 'Ramanathan',
-            EmployeeId: 'D6132',
-            Department: 'Development',
-            JobTitle: 'Developer',
-            EmpImg: 'https://cdn.vuetifyjs.com/images/lists/3.jpg'
-          },
-          {
-            Fname: 'Julie',
-            Lname: '',
-            EmployeeId: 'O9004',
-            Department: 'Operations',
-            JobTitle: 'Operation Manager',
-            EmpImg: 'https://cdn.vuetifyjs.com/images/lists/4.jpg'
-          },
-        ]
-      },
         changeStatusFilter(text){
                 this.statusFiltered = text
             },
 
-      editItem (item) {
-        this.editedIndex = this.employees.indexOf(item)
-        this.editedItem = Object.assign({}, item)
-        this.dialog = true
-      },
-
-      deleteItem (item) {
-        const index = this.employees.indexOf(item)
-        confirm('Are you sure you want to delete this item?') && this.employees.splice(index, 1)
-      },
-
-      close () {
-        this.dialog = false
-        setTimeout(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        }, 300)
-      },
-
-      save () {
-        if (this.editedIndex > -1) {
-          Object.assign(this.employees[this.editedIndex], this.editedItem)
-        } else {
-          this.employees.push(this.editedItem)
-        }
-        this.close()
-      }
     }
   }
 </script>

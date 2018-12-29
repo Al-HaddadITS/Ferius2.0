@@ -6,8 +6,16 @@
       <!-- <span class="title ml-3 mr-5">Google&nbsp;<span class="font-weight-light">Keep</span></span> -->
 
       <v-spacer></v-spacer>
-<!-- <v-toolbar-title>{{ setting.app_name }} - {{ page_title }}</v-toolbar-title> -->
-<v-toolbar-title>{{ pageTitle }}</v-toolbar-title>
+<!-- <v-toolbar-title>{{ pageTitle }}</v-toolbar-title> -->
+<v-toolbar-title>
+    <div class="marquee">
+        <!-- <MarqueeText :duration="30">
+            <span class="marqueeSpan" v-for="item in news" :key="item.id">
+            NEWS: {{ item.value }}
+            </span>
+        </MarqueeText> -->
+    </div>
+</v-toolbar-title>
 <v-spacer></v-spacer>
 <v-toolbar-items class="hidden-sm-and-down">
 
@@ -47,7 +55,11 @@
 
 
 <script>
+import MarqueeText from 'vue-marquee-text-component'
 export default {
+      components: {
+    MarqueeText
+  },
     props: [
         'user'
     ],
@@ -57,6 +69,20 @@ export default {
         { title: 'System Settings' },
         { title: 'Change Password' },
         { title: 'Logout' }
+      ],
+      news: [
+          {
+              id: '1',
+              value: 'HRMS 2.0 to be released soon'
+              },
+          {
+              id: '2',
+              value: 'Al-Haddad ITS first Trillion Dollar Company in Bahrain'
+              },
+          {
+              id: '3',
+              value: 'In celebration of new years, Al-Haddad ITS is throwing a gathering party'
+              },
       ]
         }
     },
@@ -88,3 +114,12 @@ export default {
         }
 }
 </script>
+
+<style scoped>
+.marquee{
+    font-size: 15px;
+}
+.marqueeSpan{
+        margin-right: 700px;
+}
+</style>

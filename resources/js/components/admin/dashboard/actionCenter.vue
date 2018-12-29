@@ -42,8 +42,8 @@
         >
 
           <v-list-tile
-            v-for="item in items"
-            :key="item.title"
+            v-for="(item, index) in items"
+            :key="index"
             avatar
           >
 
