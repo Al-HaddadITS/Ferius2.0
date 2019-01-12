@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Employee;
 use App\Department;
+use App\User;
 use Illuminate\Http\Request;
+use App\Permission;
 
 class EmployeeController extends Controller
 {
@@ -71,11 +73,43 @@ class EmployeeController extends Controller
         $emp->department_id = $request->department_id;
         $emp->profilePic = $request->profilePic;
         $emp->Resume = $request->Resume;
+        $emp->ResumeFile = $request->ResumeFile;
         $emp->IDCopy = $request->IDCopy;
+        $emp->IDFile = $request->IDFile;
         $emp->PassportCopy = $request->PassportCopy;
+        $emp->PassportFile = $request->PassportFile;
         $emp->EduCertificate = $request->EduCertificate;
+        $emp->EducationFile = $request->EducationFile;
         $emp->OtherDocs = $request->OtherDocs;
+        $emp->OtherFile = $request->OtherFile;
         $emp->save();
+
+
+        $fullname = $request->Fname." ".$request->Lname;
+        $password = bcrypt($request->ID_no);
+
+
+        $user = new User;
+        $user->name = $fullname;
+        $user->email = $request->email;
+        $user->password = $password;
+        $user->type = 'employee';
+
+
+        $permission = new Permission;
+        $permission->all_employees = false;
+        $permission->all_attendance = false;
+        $permission->all_payroll = false;
+        $permission->manage_leaves = false;
+        $permission->reports = false;
+        $permission->hr_templates = false;
+        $user->Permission()->save($permission);
+        $user->permission_id = $permission->id;
+        $emp->user()->save($user);
+        $emp->user_id = $user->id;
+        $emp->save();
+
+        // $user->save();
         return $request;
     }
 
@@ -85,9 +119,11 @@ class EmployeeController extends Controller
      * @param  \App\Employee  $employee
      * @return \Illuminate\Http\Response
      */
-    public function show(Employee $employee)
+    public function show($id)
     {
-        //
+        $emp = Employee::with('Department', 'Template', 'user')->find($id);
+        // return new EmployeeResource($emp);
+        return $emp;
     }
 
     /**

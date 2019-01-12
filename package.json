@@ -25,6 +25,7 @@
         "@tinymce/tinymce-vue": "^1.1.0",
         "@toast-ui/vue-editor": "^1.0.2",
         "firebase": "^5.7.0",
+        "register-service-worker": "^1.5.2",
         "tiptap": "^1.6.0",
         "tiptap-extensions": "^1.6.0",
         "tui-editor": "^1.2.9",

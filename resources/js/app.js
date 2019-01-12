@@ -2,9 +2,10 @@ import Vuetify from 'vuetify'
 import Axios from 'axios'
 import store from './store'
 import router from './router'
-import { createSimpleTransition } from 'vuetify/es5/util/helpers'
+import {
+    createSimpleTransition
+} from 'vuetify/es5/util/helpers'
 import 'vuetify/dist/vuetify.min.css'
-
 import VeeValidate from 'vee-validate'
 
 
@@ -46,6 +47,11 @@ files.keys().map(key => {
     return Vue.component(_.last(key.split('/')).split('.')[0], files(key))
 })
 
+
+
+
+
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -57,5 +63,3 @@ const app = new Vue({
     router,
     store
 });
-
-

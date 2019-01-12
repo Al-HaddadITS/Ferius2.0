@@ -7,17 +7,18 @@
 
       <v-spacer></v-spacer>
 <!-- <v-toolbar-title>{{ pageTitle }}</v-toolbar-title> -->
-<v-toolbar-title>
+<v-toolbar-title class="hidden-sm-and-down">
     <div class="marquee">
-        <!-- <MarqueeText :duration="30">
+        <MarqueeText :duration="30">
             <span class="marqueeSpan" v-for="item in news" :key="item.id">
             NEWS: {{ item.value }}
             </span>
-        </MarqueeText> -->
+        </MarqueeText>
     </div>
 </v-toolbar-title>
 <v-spacer></v-spacer>
-<v-toolbar-items class="hidden-sm-and-down">
+<!-- <v-toolbar-items class="hidden-sm-and-down"> -->
+<v-toolbar-items>
 
 <v-menu offset-y open-on-hover>
     <v-btn
@@ -31,7 +32,7 @@
             </v-list-tile-avatar>
 
             <v-list-tile-content>
-              <v-list-tile-title>{{ user.name }}</v-list-tile-title>
+              <v-list-tile-title>{{ UserName }}</v-list-tile-title>
             </v-list-tile-content>
             <v-icon right>arrow_drop_down</v-icon>
           </v-list-tile>
@@ -41,8 +42,12 @@
         <v-list-tile
           v-for="(item, index) in items"
           :key="index"
+          :to="{name: item.link}"
         >
           <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+        </v-list-tile>
+        <v-list-tile @click="logout()">
+            Logout
         </v-list-tile>
       </v-list>
 
@@ -60,15 +65,15 @@ export default {
       components: {
     MarqueeText
   },
-    props: [
-        'user'
-    ],
+    // props: [
+    //     'user'
+    // ],
     data(){
         return{
+            UserName: '',
             items: [
-        { title: 'System Settings' },
-        { title: 'Change Password' },
-        { title: 'Logout' }
+        { title: 'System Settings' , link: 'AdminDashboard'},
+        { title: 'Change Password' , link: 'AdminDashboard'},
       ],
       news: [
           {
@@ -88,8 +93,13 @@ export default {
     },
         created() {
         this.$store.dispatch('getSettings')
+        // this.$store.dispatch('setUser')
+
     },
         computed:{
+            user(){
+                return this.$store.getters.user
+            },
         settings(){
             return this.$store.getters.settings
         },
@@ -97,15 +107,19 @@ export default {
             return this.$store.getters.pageTitle
         }
         },
+        watch: {
+            user: function(val){
+                this.UserName = this.user.name
+            }
+        },
         methods:{
             logout(){
-            axios.post('logout')
-                .then(res => {
-                    window.location.href = '/';
-                    console.log(res);
+                this.$store.dispatch('logout')
+                .then(res =>{
+                    this.$router.push('/')
                 })
-                .catch(err =>{
-                    console.log(err);
+                .catch(err => {
+                    console.log(err)
                 })
         },
         toggleNav(){

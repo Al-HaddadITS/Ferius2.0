@@ -1,11 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios';
-
+// import router from './router'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
+        userLoading: false,
+        admin: false,
+        accessToken: localStorage.getItem("access_token") || null,
         settings: null,
         drawer: true,
         snackbar: false,
@@ -15,10 +18,20 @@ const store = new Vuex.Store({
         departments: [],
         templates: [],
         viewTemplates: [],
+        viewEmployee: [],
         pageTitle: '',
         loading: false
     },
     mutations: {
+        setUserLoading(state, payload){
+            state.userLoading = payload
+        },
+        setAdmin(state, payload){
+            state.admin = payload
+        },
+        setAccessToken(state, payload){
+            state.accessToken = payload
+        },
         clearLoading(state){
             state.loading = false
         },
@@ -43,6 +56,9 @@ const store = new Vuex.Store({
         SetViewTemplates(state, payload){
             state.viewTemplates = payload
         },
+        SetViewEmployee(state, payload){
+            state.viewEmployee = payload
+        },
         setDepartments(state, payload){
             state.departments = payload
         },
@@ -60,11 +76,72 @@ const store = new Vuex.Store({
         }
     },
     actions:{
+        logout({commit, dispatch, getters}){
+            let access_token = localStorage.getItem("access_token")
+            let URL = "/api/auth/logout"
+            let Bearer = 'Bearer ' + access_token
+            if(getters.loggedIn){
+                commit('setUserLoading', true)
+                return new Promise((resolve, reject) => {
+                axios.get(URL, { headers: { Authorization: Bearer } })
+                    .then(res => {
+                        commit('setUserLoading', false)
+                        localStorage.removeItem("access_token");
+                        dispatch('setAccessToken', null)
+                        resolve(res)
+                    })
+                    .catch(err => {
+                        commit('setUserLoading', false)
+                    console.log(err)
+                    reject(err)
+                    })
+                })
+            }
+        },
+        login({commit, dispatch, getters}, payload){
+
+            return new Promise((resolve, reject) => {
+                axios.post('/api/auth/login', {
+                    email: payload.email,
+                    password: payload.password,
+                    remember: payload.remember,
+                })
+                .then(res => {
+                    let accessToken = res.data.access_token
+                    localStorage.setItem("access_token", accessToken)
+                    commit('setAccessToken', accessToken)
+                    // dispatch('setUser')
+                    //     .then(res => {
+                    //         if(getters.admin){
+                    //             router.push({name: 'AdminDashboard'})
+                    //         }
+                    //         else{
+                    //             router.push({name: 'EmployeeDashboard'})
+                    //         }
+                    //     })
+                    resolve(res)
+                })
+                .catch(e=>{
+                    console.log(e)
+                    reject(e)
+                })
+            })
+            },
+        setAccessToken({commit}, payload){
+            commit('setAccessToken', payload)
+        },
         viewTemplate({commit}, payload){
             fetch('/api/TemplatesList/'+payload)
                 .then(res => res.json())
                 .then(res => {
                     commit('SetViewTemplates', res)
+                })
+        },
+        viewEmployee({commit}, payload){
+            fetch('/api/EmployeesList/'+payload)
+                .then(res => res.json())
+                .then(res => {
+                    commit('SetViewEmployee', res)
                 })
         },
         setSnackBar({commit}, payload){
@@ -153,14 +230,18 @@ const store = new Vuex.Store({
                      department_id: payload.department_id,
                      profilePic: payload.profilePic,
                      Resume: payload.Resume,
+                     ResumeFile: payload.ResumeFile,
                      IDCopy: payload.IDCopy,
+                     IDFile: payload.IDFile,
                      PassportCopy: payload.PassportCopy,
+                     PassportFile: payload.PassportFile,
                      EduCertificate: payload.EduCertificate,
-                     OtherDocs: payload.OtherDocs
+                     EducationFile: payload.EducationFile,
+                     OtherDocs: payload.OtherDocs,
+                     OtherFile: payload.OtherFile
             })
                 .then(res =>{
-                    // this.$router.push({name: 'AdminHrTemplates'})
-                    // console.log(res)
+                    console.log(res)
                 })
                 .catch(e =>{
                     console.log(e)
@@ -222,12 +303,34 @@ const store = new Vuex.Store({
                     console.log(e)
                 })
         },
+
         setUser({commit}){
-            fetch('/getUser')
-                .then(res => res.json())
+            let access_token = localStorage.getItem("access_token")
+            let URL = "/api/auth/user"
+            let Bearer = 'Bearer ' + access_token
+            commit('setUserLoading', true)
+
+            return new Promise((resolve, reject) => {
+
+                axios.get(URL, { headers: { Authorization: Bearer } })
+                // .then(res => res.json())
                 .then(res => {
-                    commit('setUser', res)
+                    commit('setUserLoading', false)
+                    commit('setUser', res.data)
+                    if(res.data.type == 'admin'){
+                        commit('setAdmin', true)
+                    }
+                    else{
+                        commit('setAdmin', false)
+                    }
+                    resolve(res)
                 })
+                .catch(e => {
+                    commit('setUserLoading', false)
+                    console.log(e)
+                    reject(e)
+                })
+            })
         },
         toggleNav({commit}){
             commit('toggleNav')
@@ -241,6 +344,18 @@ const store = new Vuex.Store({
         }
     },
     getters:{
+        userLoading(state){
+            return state.userLoading
+        },
+        admin(state){
+            return state.admin
+        },
+        loggedIn(state){
+            return state.accessToken !== null
+        },
+        accessToken(state){
+            return state.accessToken
+        },
         loading(state){
             return state.loading
         },
@@ -273,6 +388,9 @@ const store = new Vuex.Store({
         },
         viewTemplates(state){
             return state.viewTemplates
+        },
+        viewEmployee(state){
+            return state.viewEmployee
         },
     }
 })

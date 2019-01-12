@@ -2,7 +2,7 @@
     <v-app id="keep">
         <admin_navbar></admin_navbar>
         <div class="main_content">
-            <app_header :user="user"></app_header>
+            <app_header></app_header>
             <v-content class="page">
                 <transition name="router-anim" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
             <router-view></router-view>
@@ -15,9 +15,9 @@
 
 <script>
 export default {
-    props: [
-        'user'
-    ]
+created() {
+    // this.$router.push({name: 'AdminDashboard'})
+},
 }
 </script>
 

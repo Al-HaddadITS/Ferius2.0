@@ -1099,6 +1099,11 @@ height: 500,
       EmpIDRules: [
         v => !!v || 'Employee ID is required'
       ],
+      ResumeName: '',
+      IDName: '',
+      PassportName: '',
+      EducationName: '',
+      otherName: ''
       }
     },
     created(){
@@ -1255,10 +1260,15 @@ height: 500,
                      department_id: this.department.id,
                      profilePic: this.imageUrl,
                      Resume: this.Resume,
+                     ResumeFile: this.ResumeName,
                      IDCopy: this.ID,
+                     IDFile: this.IDName,
                      PassportCopy: this.PassportCopy,
+                     PassportFile: this.PassportName,
                      EduCertificate: this.Education,
-                     OtherDocs: this.Other
+                     EducationFile: this.EducationName,
+                     OtherDocs: this.Other,
+                     OtherFile: this.otherName
                  })
                  .then(res => {
                      this.$router.push({name: 'AdminEmployees'})
@@ -1333,6 +1343,7 @@ height: 500,
                 })
                 fileReader.readAsDataURL(files[0])
                 this.OtherFile = files[0]
+                this.otherName = filename
             },
 
             EducationUpload(){
@@ -1351,6 +1362,7 @@ height: 500,
                 })
                 fileReader.readAsDataURL(files[0])
                 this.EducationFile = files[0]
+                this.EducationName = filename
             },
 
             IDUpload(){
@@ -1369,6 +1381,7 @@ height: 500,
                 })
                 fileReader.readAsDataURL(files[0])
                 this.IDFile = files[0]
+                this.IDName = filename
             },
 
             PassportUpload(){
@@ -1387,6 +1400,7 @@ height: 500,
                 })
                 fileReader.readAsDataURL(files[0])
                 this.PassportFile = files[0]
+                this.PassportName = filename
             },
 
             profilePicUpload(){
@@ -1413,6 +1427,7 @@ height: 500,
                 })
                 fileReader.readAsDataURL(files[0])
                 this.ResumeFile = files[0]
+                this.ResumeName = filename
 
             },
 

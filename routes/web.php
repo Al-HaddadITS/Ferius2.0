@@ -11,25 +11,29 @@
 |
 */
 
-Route::get('/', 'LogingInController@index')->name('logingin');
+Route::get('/', 'MainController@index')->name('logingin');
 
 
-Auth::routes();
+// Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/signin', 'SignInController@index')->name('signin');
 
-Route::get('/admin', 'AdminController@index')->name('admin');
+// Route::get('/admin', 'AdminController@index')->name('admin');
 
 Route::get('/getUser', 'LogingInController@user');
 
-Route::get('/admin/home', 'AdminController@index');
-Route::get('/admin/employees', 'AdminController@index');
+Route::get('/admin/home', 'MainController@index');
+Route::get('/admin/employees', 'MainController@index');
 
-Route::get('/admin/departments', 'AdminController@index');
-Route::get('/admin/hrTemplates', 'AdminController@index');
-Route::get('/admin/hrTemplates/create', 'AdminController@index');
-Route::get('/admin/hrTemplate/view/{id}', 'AdminController@index');
+Route::get('/admin/departments', 'MainController@index');
+Route::get('/admin/hrTemplates', 'MainController@index');
+Route::get('/admin/hrTemplates/create', 'MainController@index');
+Route::get('/admin/hrTemplate/view/{id}', 'MainController@index');
 
-Route::get('/admin/employees/create', 'AdminController@index' );
+Route::get('/admin/employees/create', 'MainController@index' );
+Route::get('/admin/organizations', 'MainController@index' );
+Route::get('/login', 'MainController@index' );
+
+// Route::get('/logout', 'AdminController@index' );

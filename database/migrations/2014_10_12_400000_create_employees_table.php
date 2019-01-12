@@ -40,19 +40,24 @@ class CreateEmployeesTable extends Migration
             $table->string('telNo')->nullable();
             $table->string('address')->nullable();
             $table->unsignedInteger('template_id')->nullable();
-            $table->foreign('template_id')->references('id')->on('templates');
+            $table->foreign('template_id')->references('id')->on('templates')->onDelete('cascade');
             $table->string('salary')->nullable();
             $table->string('contractDate')->nullable();
             $table->string('doj')->nullable();
             $table->string('JobTitle')->nullable();
             $table->unsignedInteger('department_id')->nullable();
-            $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->longText('profilePic')->nullable();
             $table->longText('Resume')->nullable();
+            $table->string('ResumeFile')->nullable();
             $table->longText('IDCopy')->nullable();
+            $table->string('IDFile')->nullable();
             $table->longText('PassportCopy')->nullable();
+            $table->string('PassportFile')->nullable();
             $table->longText('EduCertificate')->nullable();
+            $table->string('EducationFile')->nullable();
             $table->longText('OtherDocs')->nullable();
+            $table->string('OtherFile')->nullable();
             $table->timestamps();
         });
     }

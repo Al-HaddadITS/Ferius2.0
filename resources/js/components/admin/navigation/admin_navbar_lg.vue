@@ -62,7 +62,7 @@ export default {
         { icon: 'notification_important', text: 'Alerts Center', link: 'AdminDashboard'},
         { divider: true },
         { icon: 'account_circle', text: 'Employees' , link: 'AdminEmployees' },
-        { icon: 'account_balance', text: 'Oraganizations' , link: 'AdminEmployees' },
+        { icon: 'account_balance', text: 'Departments' , link: 'AdminOrganization' },
         { icon: 'fingerprint', text: 'Attendance' , link: 'AdminEmployees'},
         { icon: 'attach_money', text: 'Payroll' , link: 'AdminEmployees'},
         { icon: 'time_to_leave', text: 'Leave Management' , link: 'AdminEmployees'},
