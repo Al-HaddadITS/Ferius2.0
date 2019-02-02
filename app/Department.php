@@ -11,6 +11,14 @@ class Department extends Model
     {
         return $this->hasMany('App\Employee');
     }
+    // public function Manager()
+    // {
+    //     return $this->hasOne('App\Manager');
+    // }
+    public function Manager()
+    {
+        return $this->belongsTo('App\Manager', 'manager');
+    }
 }
 
 // HasMany

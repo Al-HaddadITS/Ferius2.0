@@ -14,7 +14,7 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $dep = Department::with('Employee')->get();
+        $dep = Department::with('Employee', 'Manager')->get();
         return $dep;
     }
 
@@ -45,9 +45,10 @@ class DepartmentController extends Controller
      * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function show(Department $department)
+    public function show($id)
     {
-        //
+        $dep = Department::with('Employee', 'Manager')->find($id);
+        return $dep;
     }
 
     /**

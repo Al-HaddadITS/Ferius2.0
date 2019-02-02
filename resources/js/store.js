@@ -6,6 +6,8 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
+        myDetails: [],
+        allPermissions: [],
         userLoading: false,
         admin: false,
         accessToken: localStorage.getItem("access_token") || null,
@@ -16,13 +18,27 @@ const store = new Vuex.Store({
         user: null,
         employees: [],
         departments: [],
+        myDepartment: [],
         templates: [],
         viewTemplates: [],
         viewEmployee: [],
         pageTitle: '',
-        loading: false
+        loading: false,
+        leaves: []
     },
     mutations: {
+        setLeaves(state, payload){
+            state.leaves = payload
+        },
+        setMyDepartment(state, payload){
+            state.myDepartment = payload
+        },
+        setMyDetails(state, payload){
+            state.myDetails = payload
+        },
+        setAllPermissions(state, payload){
+            state.allPermissions = payload
+        },
         setUserLoading(state, payload){
             state.userLoading = payload
         },
@@ -76,6 +92,46 @@ const store = new Vuex.Store({
         }
     },
     actions:{
+        leaves({commit}, payload){
+            let URL = "http://localhost:8000/api/Leaves/"
+            axios.get(URL)
+                .then(res => {
+                    commit('setLeaves', res.data)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        },
+        myDepartment({commit}, payload){
+            let URL = "http://localhost:8000/api/DepartmentsList/"
+            axios.get(URL + payload)
+                .then(res => {
+                    commit('setMyDepartment', res.data)
+                })
+                .catch(e => {
+                    console.log(e)
+                })
+        },
+        myDetails({commit}, payload){
+            let access_token = localStorage.getItem("access_token")
+            let URL = "/api/auth/myEmployee"
+            let Bearer = 'Bearer ' + access_token
+
+            return new Promise((resolve, reject) => {
+
+                axios.get(URL, { headers: { Authorization: Bearer } })
+                // .then(res => res.json())
+                .then(res => {
+                    commit('setMyDetails', res.data)
+                    resolve(res)
+                })
+                .catch(e => {
+                    console.log(e)
+                    reject(e)
+                })
+            })
+        },
+
         logout({commit, dispatch, getters}){
             let access_token = localStorage.getItem("access_token")
             let URL = "/api/auth/logout"
@@ -113,7 +169,7 @@ const store = new Vuex.Store({
                     // dispatch('setUser')
                     //     .then(res => {
                     //         if(getters.admin){
-                    //             router.push({name: 'AdminDashboard'})
+                        //             router.push({name: 'AdminDashboard'})
                     //         }
                     //         else{
                     //             router.push({name: 'EmployeeDashboard'})
@@ -126,10 +182,11 @@ const store = new Vuex.Store({
                     reject(e)
                 })
             })
-            },
+        },
         setAccessToken({commit}, payload){
             commit('setAccessToken', payload)
         },
+
         viewTemplate({commit}, payload){
             fetch('/api/TemplatesList/'+payload)
                 .then(res => res.json())
@@ -139,7 +196,7 @@ const store = new Vuex.Store({
         },
         viewEmployee({commit}, payload){
             fetch('/api/EmployeesList/'+payload)
-                .then(res => res.json())
+                // .then(res => res.json())
                 .then(res => {
                     commit('SetViewEmployee', res)
                 })
@@ -241,7 +298,7 @@ const store = new Vuex.Store({
                      OtherFile: payload.OtherFile
             })
                 .then(res =>{
-                    console.log(res)
+                    // console.log(res)
                 })
                 .catch(e =>{
                     console.log(e)
@@ -303,8 +360,10 @@ const store = new Vuex.Store({
                     console.log(e)
                 })
         },
+        // setAllPermissions({commit}, payload){
 
-        setUser({commit}){
+        //   },
+        setUser({commit, dispatch, getters}){
             let access_token = localStorage.getItem("access_token")
             let URL = "/api/auth/user"
             let Bearer = 'Bearer ' + access_token
@@ -315,12 +374,27 @@ const store = new Vuex.Store({
                 axios.get(URL, { headers: { Authorization: Bearer } })
                 // .then(res => res.json())
                 .then(res => {
-                    commit('setUserLoading', false)
+                    fetch('/api/getAllPermissions/' + res.data.id)
+                        .then(res => res.json())
+                        .then(res => {
+                            commit('setUserLoading', false)
+                            commit('setAllPermissions', res)
+                        })
+                        .catch(e => {
+                            console.log(e)
+                            commit('setUserLoading', false)
+                        })
                     commit('setUser', res.data)
                     if(res.data.type == 'admin'){
                         commit('setAdmin', true)
                     }
                     else{
+                        dispatch('myDetails')
+                            .then(res => {
+                                // console.log(res.data.department.id)
+                                // console.log(getters.myDetails.department)
+                                dispatch('myDepartment', res.data.department.id)
+                            })
                         commit('setAdmin', false)
                     }
                     resolve(res)
@@ -344,6 +418,18 @@ const store = new Vuex.Store({
         }
     },
     getters:{
+        leaves(state){
+            return state.leaves
+        },
+        myDepartment(state){
+            return state.myDepartment
+        },
+        myDetails(state){
+            return state.myDetails
+        },
+        allPermissions(state){
+            return state.allPermissions
+        },
         userLoading(state){
             return state.userLoading
         },

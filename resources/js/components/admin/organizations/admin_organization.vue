@@ -33,7 +33,7 @@
           <v-toolbar-title class="text-xs-center">Departments List</v-toolbar-title>
           <v-spacer></v-spacer>
 
-        <v-btn outline :to="{name: 'AdminHrTemplatesCreate'}">Add New Department</v-btn>
+        <v-btn outline :to="{name: 'AdminOrganizationCreate'}">Add New Department</v-btn>
 
 
         </v-toolbar>
@@ -51,8 +51,9 @@
           <tr @click="openDialog(props.item.id)"  style="cursor: pointer;">
 
         <td>{{ props.item.name }}</td>
+        <!-- <td>{{ props.item.manager.Fname+' '+props.item.manager.Lname || "Not Assigned" }}</td> -->
+        <td>{{ Manager(props.item) }}</td>
         <td>{{ countEmp(props.item) }}</td>
-        <td>{{ props.item.updated_at }}</td>
 
 
 </tr>
@@ -83,59 +84,7 @@
         Close
       </v-btn>
     </v-snackbar>
-    <v-dialog
-      v-model="viewTemplateDialog"
-
-    >
-    <v-card>
-        <v-card-title
-          class="headline grey lighten-2"
-          primary-title
-        >
-          {{ viewTemplates.name }}
-        </v-card-title>
-
-        <v-card-text>
-            <!-- {{ tempMethod(viewTemplates.temp) }} -->
-            <!-- <div class="pre-formatted" v-html="viewTemplates.temp"> -->
-            <div class="pre-formatted">
-
-<editor
-v-model="viewTemplates.temp"
-:init="config"
-api-key="8vg7aylhgr5nwcnq7fzajhqcfehqvrzyaog4226rl7mymtd1"
-></editor>
-                <!-- <viewer
-                :value="viewTemplates.temp"
-                ></viewer> -->
-
-            </div>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            :color="setting.app_color_info"
-            flat
-            @click="editTemplate(viewTemplates.id, viewTemplates.name, viewTemplates.temp)"
-          >
-            Edit
-          </v-btn>
-          <v-btn
-            :color="setting.app_color_error"
-            flat
-            @click="deleteTemplate(viewTemplates.id, viewTemplates.name)"
-          >
-            Delete
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-
-    </v-dialog>
-
-
+   
 
 
 
@@ -168,12 +117,9 @@ api-key="8vg7aylhgr5nwcnq7fzajhqcfehqvrzyaog4226rl7mymtd1"
 </template>
 
 <script>
-import Editor from '@tinymce/tinymce-vue';
-// import { component } from 'vue-mce'
+
   export default {
-      components: {
-    'editor': Editor
-  },
+
     data: () => ({
         config:{
 height: 500,
@@ -212,12 +158,8 @@ height: 500,
       empName: '',
       headers: [
         { text: 'Name', value: 'name'},
+        { text: 'Manager', value: 'updated_at' },
         { text: 'Number of Employees', value: 'empCount' },
-        { text: 'Updated At', value: 'updated_at' },
-      ],
-      modalPicker:[
-          {title: "Click Here to send Contract form to employee"},
-          {title: "Click Here to manually fill in the employee form"}
       ],
       employees: [],
       editedIndex: -1,
@@ -290,6 +232,15 @@ height: 500,
     },
 
     methods: {
+        Manager(dep){
+            const manager = dep.manager
+            if(manager){
+                return manager.Fname+' '+manager.Lname
+            }
+            else{
+                return 'Not Assigned'
+            }
+        },
         countEmp(dep){
             const emp = dep.employee
             return emp.length

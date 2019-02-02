@@ -8,6 +8,10 @@ import AdminDepartments from './components/admin/departments/admin_departments.v
 import AdminHrTemplates from './components/admin/HrTemplates/adminHrTemplates.vue'
 import AdminHrTemplatesCreate from './components/admin/HrTemplates/AdminHrTemplatesCreate.vue'
 import AdminOrganization from './components/admin/organizations/admin_organization.vue'
+import AdminOrganizationCreate from './components/admin/organizations/AdminOrganizationCreate.vue'
+import MyEmployees from './components/manager/MyEmployees.vue'
+import myProfile from './components/myProfile.vue'
+import leaves from './components/admin/leaveManagement/leaves.vue'
 import login from './components/Login.vue'
 import store from './store'
 
@@ -30,74 +34,106 @@ const router = new Router({
             }
         },
         {
-            path: '/admin',
-            redirect: '/admin/home',
-            meta: {
-                requiresAdminAuth: true
-            }
-        },
-        {
-            path: '/admin/home',
-            name: 'AdminDashboard',
-            component: AdminDashboard,
-            meta: {
-                requiresAdminAuth: true
-            }
-        },
-        {
-            path: '/home',
-            name: 'EmployeeDashboard',
-            component: EmployeeDashboard,
+            path: '/',
+            redirect: '/home',
             meta: {
                 requiresAuth: true
             }
         },
         {
-            path: '/admin/employees',
+            path: '/home',
+            name: 'AdminDashboard',
+            component: AdminDashboard,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        // {
+        //     path: '/home',
+        //     name: 'EmployeeDashboard',
+        //     component: EmployeeDashboard,
+        //     meta: {
+        //         requiresAuth: true
+        //     }
+        // },
+        {
+            path: '/myProfile',
+            name: 'myProfile',
+            component: myProfile,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/employees',
             name: 'AdminEmployees',
             component: AdminEmployees,
             meta: {
-                requiresAdminAuth: true
+                requiresAuth: true
             }
         },
         {
-            path: '/admin/employees/create',
+            path: '/employees/create',
             name: 'AdminEmployeesCreate',
             component: AdminEmployeesCreate,
             meta: {
-                requiresAdminAuth: true
+                requiresAuth: true
             }
         },
+        // {
+        //     path: '/admin/departments',
+        //     name: 'AdminDepartments',
+        //     component: AdminDepartments,
+        //     meta: {
+        //         requiresAuth: true
+        //     }
+        // },
         {
-            path: '/admin/departments',
-            name: 'AdminDepartments',
-            component: AdminDepartments,
-            meta: {
-                requiresAdminAuth: true
-            }
-        },
-        {
-            path: '/admin/hrTemplates',
+            path: '/hrTemplates',
             name: 'AdminHrTemplates',
             component: AdminHrTemplates,
             meta: {
-                requiresAdminAuth: true
+                requiresAuth: true
             }
         },
         {
-            path: '/admin/hrTemplates/create',
+            path: '/hrTemplates/create',
             name: 'AdminHrTemplatesCreate',
             component: AdminHrTemplatesCreate,
             meta: {
-                requiresAdminAuth: true
+                requiresAuth: true
             }
         },
         {
-            path: '/admin/organizations',
+            path: '/departments',
             name: 'AdminOrganization',
             component: AdminOrganization,
             meta: {
-                requiresAdminAuth: true
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/departments/create',
+            name: 'AdminOrganizationCreate',
+            component: AdminOrganizationCreate,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/MyEmployees',
+            name: 'MyEmployees',
+            component: MyEmployees,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/leaves',
+            name: 'leaves',
+            component: leaves,
+            meta: {
+                requiresAuth: true
             }
         },
         {
@@ -135,15 +171,15 @@ router.beforeEach((to, from, next) => {
         if (store.getters.loggedIn) {
             store.dispatch('setUser')
                 .then(res => {
-                        if (store.getters.admin) {
-                            next({
-                                name: 'AdminDashboard',
-                            })
-                        } else {
-                            next({
-                                name: 'EmployeeDashboard',
-                            })
-                        }
+                    next({
+                        name: 'AdminDashboard',
+                    })
+                    //     if (store.getters.admin) {
+                    //     } else {
+                    //         next({
+                    //             name: 'EmployeeDashboard',
+                    //         })
+                    //     }
                     })
         } else {
             next({
@@ -152,41 +188,47 @@ router.beforeEach((to, from, next) => {
         }
     }else if (to.matched.some(record => record.meta.requiresVisitor)) {
         if (store.getters.loggedIn) {
+            if(!store.getters.user){
+                store.dispatch('setUser')
+            }
             next({
                 name: 'redirect',
             })
         } else {
             next()
         }
-    } else if (to.matched.some(record => record.meta.requiresAdminAuth)) {
-        if (!store.getters.loggedIn) {
-            next({
-                name: 'redirect',
-            })
-        } else {
-            if (store.getters.admin){
-                next()
-            }
-            else{
-                next({
-                    name: 'redirect',
-                })
-            }
-        }
+    // } else if (to.matched.some(record => record.meta.requiresAuth)) {
+    //     if (!store.getters.loggedIn) {
+    //         next({
+    //             name: 'redirect',
+    //         })
+    //     } else {
+    //         if (store.getters.admin){
+    //             next()
+    //         }
+    //         else{
+    //             next({
+    //                 name: 'redirect',
+    //             })
+    //         }
+    //     }
     } else if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!store.getters.loggedIn) {
             next({
                 name: 'redirect',
             })
         } else {
-            if (store.getters.admin){
-                next({
-                    name: 'redirect',
-                })
+            if(!store.getters.user){
+                store.dispatch('setUser')
             }
-            else{
-                next()
-            }
+                    next()
+            // if (store.getters.admin){
+            //     next({
+            //         name: 'redirect',
+            //     })
+            // }
+            // else{
+            // }
         }
     } else {
         next() // make sure to always call next()!

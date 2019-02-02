@@ -36,6 +36,11 @@
       :color="setting.app_color_secondary"
     ></v-checkbox>
                   </div>
+                  <div>
+                      <v-btn small outline :color="setting.app_color_secondary" @click="adminCredentials()" :disabled="loading">admin</v-btn>
+                      <v-btn small outline :color="setting.app_color_secondary" @click="managerCredentials()" :disabled="loading">Manager</v-btn>
+                      <v-btn small outline :color="setting.app_color_secondary" @click="hrCredentials()" :disabled="loading">HR</v-btn>
+                  </div>
                 </v-card-text>
                 <v-card-actions>
 <v-layout justify-space-between>
@@ -44,6 +49,18 @@
                         </v-layout>
                 </v-card-actions>
                       </v-form>
+
+      <v-alert
+      @input="onDismissed"
+      dismissible
+      type="error"
+      :value="true"
+      v-if="error"
+    >
+      {{ error.response.data.message }}
+    </v-alert>
+
+                      <!-- <errorAlert @dismissed="onDismissed" :text="error" v-if="error"></errorAlert> -->
               </v-card>
             </v-flex>
           </v-layout>
@@ -55,15 +72,20 @@
 </template>
 
 <script>
+// import errorAlert from '../components/errorAlert'
 export default {
+    //   components: {
+    //   errorAlert
+    // },
     data () {
           return {
               loading: false,
+              error: '',
             valid: false,
             e1: true,
             remember: true,
-                email: 'admin@ferius.com',
-      password: 'ferius',
+                email: '',
+      password: '',
             passwordRules: [
               (v) => !!v || 'Password is required',
             ],
@@ -82,9 +104,25 @@ export default {
         },
     },
         methods: {
+                onDismissed: function(){
+    this.error = ''
+    },
+            adminCredentials(){
+                this.email = 'admin@staffy.com'
+                this.password = 'ferius'
+            },
+            managerCredentials(){
+                this.email = 'manager@staffy.com'
+                this.password = 'ferius'
+            },
+            hrCredentials(){
+                this.email = 'hr@staffy.com'
+                this.password = 'ferius'
+            },
           login () {
               if (this.$refs.form[0].validate()) {
                   this.loading = true
+                  this.error = ''
                   this.$store.dispatch('login', {
                         email: this.email,
                         password: this.password,
@@ -95,6 +133,7 @@ export default {
                       this.loading = false
                   })
                   .catch(e => {
+                      this.error = e
                       console.log(e);
                       this.loading = false
                   })

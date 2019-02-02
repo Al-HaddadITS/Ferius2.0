@@ -60,7 +60,7 @@
           <v-toolbar-title class="text-xs-center">Employees List</v-toolbar-title>
           <v-spacer></v-spacer>
 
-        <v-btn outline :to="{name: 'AdminEmployeesCreate'}">Add New Employee</v-btn>
+        <v-btn outline :to="{name: 'AdminEmployeesCreate'}" v-if="addEmployee">Add New Employee</v-btn>
 
 
 
@@ -390,10 +390,14 @@
       currency: '',
       depName: null,
       viewTemplateDialog: false,
-      templateUpdated: ''
+      templateUpdated: '',
+      addEmployee: false
     }),
 
     computed: {
+                allPermissions(){
+            return this.$store.getters.allPermissions
+        },
       formTitle () {
         return this.editedIndex === -1 ? 'New Department' : 'Edit Department'
       },
@@ -420,6 +424,9 @@
         },
     },
     watch: {
+        allPermissions: function(val){
+            this.getAllPermissions()
+        },
             viewEmployee(val){
                 if(val.department){
                     this.depName = val.department.name
@@ -444,9 +451,17 @@
         this.$store.dispatch('getSettings')
         this.$store.dispatch('setEmployees')
         this.$store.dispatch('SetPageTitle', 'Employees')
+        this.getAllPermissions()
     },
 
     methods: {
+        getAllPermissions(){
+            this.allPermissions.forEach(item => {
+                if(item.name == "add employee"){
+                    this.addEmployee = true
+                }
+            })
+        },
 viewContract(){
 this.viewTemplateDialog = true
 

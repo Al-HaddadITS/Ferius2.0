@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use App\User;
+use App\Employee;
 class AuthController extends Controller
 {
     /**
@@ -103,7 +104,7 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
         if(!Auth::attempt($credentials))
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Invalid Username/Password Combination'
             ], 401);
         $user = $request->user();
         $tokenResult = $user->createToken('Personal Access Token');
@@ -142,5 +143,15 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         return response()->json($request->user());
+    }
+
+
+
+    public function myEmployee(Request $request)
+    {
+        // return response()->json($request->user());
+        $emp_id = $request->user()->employee_id;
+        $emp = Employee::with('Department', 'Template', 'user')->find($emp_id);
+        return response()->json($emp);
     }
 }

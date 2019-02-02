@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\LogingInController;
+use App\User;
 
 
 Route::group([
@@ -16,6 +17,7 @@ Route::group([
     ], function() {
         Route::get('logout', 'AuthController@logout');
         Route::get('user', 'AuthController@user');
+        Route::get('myEmployee', 'AuthController@myEmployee');
     });
 });
 
@@ -36,5 +38,15 @@ Route::resource('DepartmentsList', 'DepartmentController');
 
 Route::resource('TemplatesList', 'TemplateController');
 
+Route::resource('Leaves', 'LeaveController');
 
 
+Route::get('getAllPermissions/{id}', function($id) {
+    $user = User::find($id);
+    // $user->assignRole('manager');
+    return $user->getAllPermissions();
+});
+
+Route::post('addPermission', 'MainController@addPermission');
+
+Route::post('revokePermission', 'MainController@revokePermission');

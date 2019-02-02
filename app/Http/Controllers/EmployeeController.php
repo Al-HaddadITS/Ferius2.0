@@ -6,7 +6,6 @@ use App\Employee;
 use App\Department;
 use App\User;
 use Illuminate\Http\Request;
-use App\Permission;
 
 class EmployeeController extends Controller
 {
@@ -96,15 +95,6 @@ class EmployeeController extends Controller
         $user->type = 'employee';
 
 
-        $permission = new Permission;
-        $permission->all_employees = false;
-        $permission->all_attendance = false;
-        $permission->all_payroll = false;
-        $permission->manage_leaves = false;
-        $permission->reports = false;
-        $permission->hr_templates = false;
-        $user->Permission()->save($permission);
-        $user->permission_id = $permission->id;
         $emp->user()->save($user);
         $emp->user_id = $user->id;
         $emp->save();

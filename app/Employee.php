@@ -22,6 +22,13 @@ class Employee extends Model
         return $this->hasOne('App\User');
     }
 
+
+    public function Leaves()
+    {
+        return $this->hasMany('App\Leave');
+    }
+
+
 }
 
 // belongsTo
